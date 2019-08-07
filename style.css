@@ -1,13 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
 body{
     height: 100%;
     width: 100%;
+    background-color: rgb(31, 31, 31);;
 }
 
 #textOutput{
     text-align: end;
-    font-size: 24px;
+    font-size: 80px;
     align-content: center;
     vertical-align: auto;
+    color: white;
+    background-color: rgb(31, 31, 31);
 }
 
 .keys{
@@ -20,6 +28,7 @@ body{
     float: left;
     background-color: orange;
     color: white;
+    border: 1px solid rgba(145, 94, 0, 0.938);
 }
 .numberKey{
     float: left;
@@ -32,4 +41,16 @@ body{
 .disabled{
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.grayColored{
+    border: 1px solid rgb(97, 97, 97);
+}
+
+.darkerGray{
+    background-color: rgb(97, 97, 97);
+}
+
+.darkerOrange{
+    background-color: rgba(145, 94, 0, 0.938);
 }
