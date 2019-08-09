@@ -2,12 +2,9 @@
 let wdth = window.innerWidth;
 let hgth = window.innerHeight;
 
-
-//Requiered Variables
-let numA = 0;
-let numB = 0;
-let res = 0;
-
+let start = 0;
+var nums = [];
+let optrs = [];
 
 //Configurations for all buttons
 const all = document.querySelectorAll('button');
@@ -55,7 +52,7 @@ const dot = document.querySelector('#BtnDot');
 dot.addEventListener('click', onDotPressed);
 
 const equal = document.querySelector('#BtnResult');
-equal.addEventListener('click', onEqualPressed);
+//equal.addEventListener('click', onEqualPressed);
 
 
 //Handle Keyboard Press
@@ -80,6 +77,10 @@ function onKeyPressed(key){
     else if(key.keyCode == 8){
         //Delete was Pressed
         onDelPressed();
+    }
+    else if(key.keyCode == 190){
+        //Dot was Pressed
+        onDotPressed();
     }
     else{
         let keyDictionary = {
@@ -110,6 +111,12 @@ numbers.forEach(btn=>{
     btn.addEventListener('click',onNumberPressed);
 });
 
+const operators = document.querySelectorAll('.operatorKey');
+operators.forEach(op=>{
+    op.addEventListener('click', onOperatorPressed);
+})
+
+//Hover Functions
 function onCursorEnterGrayArea(key){
     key.target.classList.add('darkerGray');
 }
@@ -143,22 +150,26 @@ function div(num1, num2){
 }
 
 function operate(operator, num1, num2){
+    let res = 0;
     if(operator == "+"){
-        add(num1, num2);
+        res = add(num1, num2);
     }
     else if(operator == "-"){
-        sub(num1, num2);
+        res = sub(num1, num2);
     }
     else if(operator == "*"){
-        mult(num1, num2);
+        res = mult(num1, num2);
     }
     else if(operator == "/"){
-        div(num1, num2);
+        res = div(num1, num2);
     }
+    return res;
 }
 
 function onClearPressed(key){
     txt.innerHTML = "0";
+    nums = [];
+    optrs = [];
     dot.classList.remove('disabled');
     dot.disabled = false;
 }
@@ -173,22 +184,102 @@ function onNumberPressed(key){
 }
 
 function onDotPressed(key){
-    txt.innerHTML += key.target.innerHTML;
+    txt.innerHTML += '.';
     dot.classList.add('disabled');
     dot.disabled = true;
+}
+
+function onOperatorPressed(key){
+    if(key.target.innerHTML=='='){
+        onEqualPressed();
+        return;
+    }
+
+    let len = txt.innerHTML.length;
+    if(txt.innerHTML[len-1]=='.'){
+        onDelPressed();
+    }
+    if (isNaN(txt.innerHTML[len-1])){
+        onDelPressed();
+    }
+
+    txt.innerHTML += key.target.innerHTML;
+    dot.classList.remove('disabled');
+    dot.disabled = false;
 }
 
 function onDelPressed(key){
     let len = txt.innerHTML.length;
     let newTxt = '';
-    if(len>0 && !isNaN(txt.innerHTML[len-1])){
+    if(len>0){
         for(let i =0; i<len-1;i++){
             newTxt += txt.innerHTML[i];
         }
         txt.innerHTML = newTxt;
     }
+    if(!txt.innerHTML.includes('.')){
+        dot.classList.remove('disabled');
+        dot.disabled = false;
+    }
+    if(txt.innerHTML==''){
+        txt.innerHTML='0';
+    }
 }
 
 function onEqualPressed(key){
+
+    let st = 0;
+    let str = txt.innerHTML;
+    //Identifies the equation
+    for(let i = 0; i<=str.length; i++){
+        if(str[i]=='.'){
+
+        }
+        else if(isNaN(str[i])){
+            nums.push(str.substring(st,i));
+            optrs.push(str[i]);
+            st = i + 1;
+        }
+    }
+
+    let solving = true;
+    let result = 0;
+
+    while(solving){
+        let multi = optrs.indexOf('*');
+        let divi = optrs.indexOf('/');
+        let addi = optrs.indexOf('+');
+        let subi = optrs.indexOf('-');
+
+        if(multi < divi && multi != -1){
+            result = operate('*', nums[multi], nums[multi + 1]);
+            nums.splice(multi, 2, result);
+            optrs.splice(multi, 1);
+        }
+        else if(divi < multi && divi != -1){
+            result = operate('/', nums[divi], nums[divi + 1]);
+            if(isNaN(result)){
+                solving = false;
+            }
+            else{
+                nums.splice(divi, 2, result);
+                optrs.splice(divi, 1);
+            }
+        }
+        else if(addi < subi && addi != -1){
+            result = operate('+', nums[addi], nums[addi + 1]);
+            nums.splice(addi, 2, result);
+            optrs.splice(addi, 1);
+        }
+        else if(subi < addi && subi != -1){
+            result = operate('-', nums[subi], nums[subi + 1]);
+            nums.splice(subi, 2, result);
+            optrs.splice(subi, 1);
+        }
+        else{
+            solving = false;
+        }
+    }
+    txt.innerHTML = result;
 
 }
