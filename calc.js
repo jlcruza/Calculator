@@ -132,7 +132,7 @@ function onCursorExitOrangeArea(key){
 
 //Core functions
 function add(num1, num2){
-    return num1 + num2;
+    return Number(num1) + Number(num2);
 }
 function sub(num1, num2){
     return num1 - num2;
@@ -230,6 +230,8 @@ function onEqualPressed(key){
 
     let st = 0;
     let str = txt.innerHTML;
+    nums.length = 0;
+    optrs.length = 0;
     //Identifies the equation
     for(let i = 0; i<=str.length; i++){
         if(str[i]=='.'){
@@ -251,30 +253,71 @@ function onEqualPressed(key){
         let addi = optrs.indexOf('+');
         let subi = optrs.indexOf('-');
 
-        if(multi < divi && multi != -1){
-            result = operate('*', nums[multi], nums[multi + 1]);
-            nums.splice(multi, 2, result);
-            optrs.splice(multi, 1);
-        }
-        else if(divi < multi && divi != -1){
-            result = operate('/', nums[divi], nums[divi + 1]);
-            if(isNaN(result)){
-                solving = false;
+        if(multi < divi){
+            if(multi==-1){
+                //Do division instead
+                result = operate('/', nums[divi], nums[divi + 1]);
+                if(isNaN(result)){
+                    solving = false;
+                }
+                else{
+                    nums.splice(divi, 2, result);
+                    optrs.splice(divi, 1);
+                }
             }
             else{
-                nums.splice(divi, 2, result);
-                optrs.splice(divi, 1);
+                //Multiply
+                result = operate('*', nums[multi], nums[multi + 1]);
+                nums.splice(multi, 2, result);
+                optrs.splice(multi, 1);
             }
         }
-        else if(addi < subi && addi != -1){
-            result = operate('+', nums[addi], nums[addi + 1]);
-            nums.splice(addi, 2, result);
-            optrs.splice(addi, 1);
+        else if(divi < multi){
+            if(divi==-1){
+                //Do multiplication instead
+                result = operate('*', nums[multi], nums[multi + 1]);
+                nums.splice(multi, 2, result);
+                optrs.splice(multi, 1);
+            }
+            else{
+                //Divide
+                result = operate('/', nums[divi], nums[divi + 1]);
+                if(isNaN(result)){
+                    solving = false;
+                }
+                else{
+                    nums.splice(divi, 2, result);
+                    optrs.splice(divi, 1);
+                }
+            }
         }
-        else if(subi < addi && subi != -1){
-            result = operate('-', nums[subi], nums[subi + 1]);
-            nums.splice(subi, 2, result);
-            optrs.splice(subi, 1);
+        else if(addi < subi){
+            if(addi == -1){
+                //Do substraction instead
+                result = operate('-', nums[subi], nums[subi + 1]);
+                nums.splice(subi, 2, result);
+                optrs.splice(subi, 1);
+            }
+            else{
+                //Sum
+                result = operate('+', nums[addi], nums[addi + 1]);
+                nums.splice(addi, 2, result);
+                optrs.splice(addi, 1);
+            }
+        }
+        else if(subi < addi){
+            if(subi==-1){
+                //Do addition instead
+                result = operate('+', nums[addi], nums[addi + 1]);
+                nums.splice(addi, 2, result);
+                optrs.splice(addi, 1);
+            }
+            else{
+                //Substract
+                result = operate('-', nums[subi], nums[subi + 1]);
+                nums.splice(subi, 2, result);
+                optrs.splice(subi, 1);
+            }
         }
         else{
             solving = false;
