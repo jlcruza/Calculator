@@ -184,9 +184,12 @@ function onNumberPressed(key){
 }
 
 function onDotPressed(key){
-    txt.innerHTML += '.';
-    dot.classList.add('disabled');
-    dot.disabled = true;
+    if(!isDecimalDetected()){
+        txt.innerHTML += '.';
+        dot.classList.add('disabled');
+        dot.disabled = true;
+    }
+    
 }
 
 function onOperatorPressed(key){
@@ -217,13 +220,45 @@ function onDelPressed(key){
         }
         txt.innerHTML = newTxt;
     }
-    if(!txt.innerHTML.includes('.')){
+    if(!isDecimalDetected()){
         dot.classList.remove('disabled');
         dot.disabled = false;
     }
     if(txt.innerHTML==''){
         txt.innerHTML='0';
     }
+}
+
+function isDecimalDetected(){
+    let st = 0;
+    let digits = [];
+    let str = txt.innerHTML;
+    for(let i = 0; i<=str.length; i++){
+        if(str[i]=='.'){
+            continue;
+        }
+        else if(isNaN(str[i])){
+            digits.push(str.substring(st,i));
+            st = i + 1;
+        }
+    }
+    if(str[str.length-1]=='.'){
+        //Have dot
+        return true;
+    }
+    else if(isNaN(str[str.length-1])){
+        //Ends in operator
+        return false;
+    }
+    else if(digits[digits.length-1]%1==0){
+        //No decimal places
+        return false;
+    }
+    else{
+        //Have decimal places
+        return true;
+    }
+
 }
 
 function onEqualPressed(key){
@@ -235,7 +270,7 @@ function onEqualPressed(key){
     //Identifies the equation
     for(let i = 0; i<=str.length; i++){
         if(str[i]=='.'){
-
+            continue;
         }
         else if(isNaN(str[i])){
             nums.push(str.substring(st,i));
@@ -324,5 +359,4 @@ function onEqualPressed(key){
         }
     }
     txt.innerHTML = result;
-
 }
