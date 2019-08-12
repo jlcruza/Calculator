@@ -66,11 +66,12 @@ function onKeyPressed(key){
     }
     else if(waitSecondKey && key.keyCode == 187){
         //Plus Sign Intended
-        
+        document.getElementById('BtnSum').click();
         waitSecondKey = false;
     }
     else if(waitSecondKey && key.keyCode == 56){
         //Mult Sign Intended
+        document.getElementById('BtnMult').click();
         
         waitSecondKey = false;
     }
@@ -100,6 +101,15 @@ function onKeyPressed(key){
         }
         if(key.keyCode>=48 && key.keyCode<=57){
             txt.innerHTML =(txt.innerHTML=='0')? keyDictionary[key.keyCode]: txt.innerHTML + keyDictionary[key.keyCode];
+        }
+        else if(key.keyCode==187){
+        document.getElementById('BtnResult').click();
+        }
+        else if(key.keyCode==189){
+        document.getElementById('BtnSub').click();
+        }
+        else if(key.keyCode==191){
+        document.getElementById('BtnDiv').click();
         }
         waitSecondKey = false;
     }
@@ -185,6 +195,9 @@ function onNumberPressed(key){
 
 function onDotPressed(key){
     if(!isDecimalDetected()){
+        if(isNaN(txt.innerHTML[txt.innerHTML.length-1])){
+            txt.innerHTML+='0';
+        }
         txt.innerHTML += '.';
         dot.classList.add('disabled');
         dot.disabled = true;
