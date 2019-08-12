@@ -41,7 +41,7 @@ txt.fontSize = txt.style.height * .60 + 'px';
 //Custom button's configuration
 const zero = document.querySelector('#BtnZero');
 zero.style.height = (hgth/6 -1) + 'px';
-zero.style.width = '50%';
+zero.style.width = '25%';
 
 const clr = document.querySelector('#BtnClear');
 clr.style.height = (hgth/6 -1)+ 'px';
@@ -51,8 +51,8 @@ clr.addEventListener('click', onClearPressed);
 const dot = document.querySelector('#BtnDot');
 dot.addEventListener('click', onDotPressed);
 
-const equal = document.querySelector('#BtnResult');
-//equal.addEventListener('click', onEqualPressed);
+const back = document.querySelector('#BtnBack');
+back.addEventListener('click', onDelPressed);
 
 
 //Handle Keyboard Press
@@ -370,6 +370,9 @@ function onEqualPressed(key){
         else{
             solving = false;
         }
+    }
+    if(!isNaN(result)){
+        result.length = (result.length>9)? 9: result.length;
     }
     txt.innerHTML = result;
 }
